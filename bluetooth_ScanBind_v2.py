@@ -43,6 +43,10 @@ def bind( addr ):
 	os.system( cmd )
 
 
+###
+# Description:  Retrieves result from OBD device
+# Return:       received string
+###
 def get_result():
     buffer = ""
     repeat_count = 0
@@ -67,6 +71,10 @@ def get_result():
 
     return buffer
 
+###
+# Description:  Sends command to OBD device
+# Return:       none
+###
 def send_cmd(cmd):
     if port:
         port.flushOutput()
@@ -74,7 +82,6 @@ def send_cmd(cmd):
         for c in cmd:
             port.write(c)
         port.write('\r\n')
-
 
 ###
 # Main code.
