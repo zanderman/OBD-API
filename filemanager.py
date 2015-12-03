@@ -57,18 +57,26 @@ class FileManager:
 		except:
 			return ( False )
 
-###
-# EXAMPLE: Write some content to the file.
-###
-# writeCSV( 'test.csv', ['head1', 'head2', 'head3'] )
-# writeCSV( 'test.csv', ['1', 'a', '!'] )
-# writeCSV( 'test.csv', ['2', 'b', '@'] )
-# writeCSV( 'test.csv', ['3', 'c', '#'] )
 
-###
-# EXAMPLE: Read rows from file.
-###
-# rows = readCSV( 'test.csv' )
+
+############
+# EXAMPLES #
+############
+
+# # Import file manager class.
+# from filemanager import FileManager
+
+# # Create file manager object.
+# fm = FileManager()
+
+# # Write.
+# fm.writeCSV( 'test.csv', ['head1', 'head2', 'head3'] )
+# fm.writeCSV( 'test.csv', ['1', 'a', '!'] )
+# fm.writeCSV( 'test.csv', ['2', 'b', '@'] )
+# fm.writeCSV( 'test.csv', ['3', 'c', '#'] )
+
+# # Read.
+# rows = fm.readCSV( 'test.csv' )
 # for row in rows:
 # 	print row
 
