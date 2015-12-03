@@ -63,6 +63,12 @@ class FileManager:
 # EXAMPLES #
 ############
 
+### 
+# IMPORTANT:
+# Create a new empty file called '__init__.py' within the directory that you are currently working in.
+# This will allow you to import custom class files, such as this one, into your project.
+###
+
 # # Import file manager class.
 # from filemanager import FileManager
 
