@@ -1,16 +1,17 @@
 import serial
+import time
 # Does changing Baud affect data rates?
 # Baud rate
-BAUD = 57600
+BAUD = 9600
 
 # Create the serial port
 s = serial.Serial('/dev/rfcomm0',BAUD)
 
 def setup_device():
     
-    print 'Resetting Device: atz'
-    send_cmd('atz')
-    print get_result()
+    #print 'Resetting Device: atz'
+    #send_cmd('atz')
+    #print get_result()
 
     print '\nRemoving Echo: ate0'
     send_cmd('ate0')
@@ -41,9 +42,17 @@ def setup_device():
     print get_result()
 
 def set_baudrate():
-    print 'Setting Baud Rate: 57600'
-    send_cmd('atbrd45')
+    print 'Setting Baud Rate: 115200'
+    #send_cmd('atbrd23')
+    #print get_result()
+
+    #s.write('\r\n')
+    #print get_result()
+    send_cmd('atpp0csv23')
+    send_cmd('atpp0con')
+    send_cmd('atz')
     print get_result()
+
 
 def get_result():
     """ This function retrieves the results
@@ -113,10 +122,12 @@ if __name__ == '__main__':
     print 'Bluetooth OBD-II Speed Tests\n'
     """ Bluetooth OBD-II Speed Tests """
     
+    
     set_baudrate()
     # Setup the device
     setup_device()
 
+   
 
     # Begin speed test
     speed_test()
