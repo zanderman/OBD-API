@@ -18,10 +18,10 @@ class OBD( ):
 		self.baud = baud
 		self.port = None
 
-	def setProtocol( proto ):
+	def setProtocol( self, proto ):
 		pass
 
-	def send( cmd ):
+	def send( self, cmd ):
 		"""Send a command to the OBD adapter.
 
 		Writes the desired command via a serial connection,
@@ -57,7 +57,7 @@ class OBD( ):
 			return ( False )
 
 
-	def receive( ):
+	def receive( self ):
 		"""Retrieves result from OBD device.
 
 		Return: received string.
@@ -87,7 +87,7 @@ class OBD( ):
 		return buffer
 
 
-	def connect( ):
+	def connect( self ):
 		"""Establishes a connection with the OBD adapter.
 
 		Creates a serial conenction on '/dev/rfcomm0' at a 
@@ -106,7 +106,7 @@ class OBD( ):
 			return ( False )
 
 
-	def bind():
+	def bind( self ):
 		"""Binds the OBD adapter with 'rfcomm'
 
 		Run through the system process of 
