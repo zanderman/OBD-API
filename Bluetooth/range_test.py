@@ -10,6 +10,7 @@ import scanner
 # Imported Libraries.
 ###
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 
 # Baudrate
@@ -20,6 +21,31 @@ numIterations = 100
 
 # CSV file name.
 csvfile = "rangetest.csv"
+
+
+
+def generatePlot( rows ):
+
+	# Get columns from the rows.
+	iteration = []
+	time = []
+	for row in rows:
+		if not "Iteration" in row or not "RX/TX Time" in row:
+			iteration.append( row[0]-0 )
+			time.append( row[1]-0 )
+
+	# Generate plot.
+	figurename = "RangeTest_" + str(datetime.now()) 
+	plt.figure( figurename )
+	plt.ylabel("(RX - TX) Time [sec]")
+	plt.xlabel("Iteration")
+	plt.plot( iteration, time )
+	plt.savefig( figurename )
+
+	# Return the name of the plot.
+	return figurename
+
+
 
 
 
@@ -40,6 +66,8 @@ if __name__ == '__main__':
 
 	# Grab the first adapter returned.
 	adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
+	adapter.bind()
+	adapter.connect()
 
 	# Setup the file manager.
 	fm = FileManager()
@@ -64,13 +92,17 @@ if __name__ == '__main__':
 		timereceive = datetime.now()
 
 		# Save results to CSV file.
-		fm.writeCSV( csvfile, [ str(i), str(timereceive-timesent) ] )
+		fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
+
+	# Create a plot of the values.
+	figurename = generatePlot( fm.readCSV( csvfile ) )
 
 	# Get the time when testing completes.
 	finishtime = datetime.now()
 
 	# Write ending results.
-	print "Time to completion: " + str(starttime - finishtime)
+	print "Time to completion: " + str( finishtime - starttime )
 	print "CSV File: " + csvfile
+	print "Plot Image: " + figurename
 
 	print "[End]\tRange Testing"
