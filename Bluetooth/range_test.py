@@ -5,14 +5,12 @@
 from obd import OBD
 from filemanager import FileManager
 import scanner
+import plotter
 
 ###
 # Imported Libraries.
 ###
 from datetime import datetime
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 from time import sleep
 
 
@@ -27,32 +25,60 @@ csvfile = "rangetest.csv"
 
 
 
-def generatePlot( rows ):
+# def generatePlot( rows ):
 
-	# Declare column variables.
-	iteration = []
-	time = []
+# 	# Declare column variables.
+# 	iteration = []
+# 	time = []
 
-	# Iterate over all rows to populate the columns.
-	for row in rows:
-		if not "Iteration" in row and not row[0]=='0':
-			iteration.append( row[0] )
-			time.append( row[1] )
+# 	# Iterate over all rows to populate the columns.
+# 	for row in rows:
+# 		if not "Iteration" in row and not row[0]=='0':
+# 			iteration.append( row[0] )
+# 			time.append( row[1] )
 
-	# Generate plot.
-	figurename = "rangetest_" + datetime.now().strftime( "%H_%M_%S" )
-	plt.figure( figurename )
-	plt.ylabel("(RX - TX) Time [sec]")
-	plt.xlabel("Iteration")
-	plt.plot( iteration, time )
-	plt.savefig( figurename + ".png" )
+# 	# Generate plot.
+# 	figurename = "rangetest_" + datetime.now().strftime( "%H_%M_%S" )
+# 	plt.figure( figurename )
+# 	plt.ylabel("(RX - TX) Time [sec]")
+# 	plt.xlabel("Iteration")
+# 	plt.plot( iteration, time )
+# 	plt.savefig( figurename + ".png" )
 
-	# Return the name of the plot.
-	return figurename + ".png"
+# 	# Return the name of the plot.
+# 	return figurename + ".png"
 
+def test(  ):
+	"""Perform the range test.
 
+	Sends/Receives 'N' times and saves the time delay into a CSV file.
+	"""
 
+	###
+	# Run through all iterations.
+	###
+	for i in range( 0, numIterations ):
 
+		if i == 5:
+			print "\tBaseline established!\n\tBegin moving..."
+		
+		if i > 5:
+			# Wait for the user to move.
+			sleep(0.2)
+		
+		# Write an empty line.
+		adapter.send( "" )
+		timesent = datetime.now()
+
+		# Try to receive data.
+		rec = adapter.receive()
+		timereceive = datetime.now()
+
+		# Save results to CSV file.
+		if not "" in rec:
+			fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
+		else:
+			fm.writeCSV( csvfile, [ str(i), str( -1 ) ] )
 
 ###
 # Main Testing Code.
@@ -86,34 +112,14 @@ if __name__ == '__main__':
 	###
 	# Run the range test.
 	###
-	for i in range( 0, numIterations ):
-
-		if i == 5:
-			print "\tBaseline established!\n\tBegin moving..."
-		
-		if i > 5:
-			# Wait for the user to move.
-			sleep(0.5)
-		
-		# Write an empty line.
-		adapter.send( "" )
-		timesent = datetime.now()
-
-		# Try to receive data.
-		rec = adapter.receive()
-		timereceive = datetime.now()
-
-		# Save results to CSV file.
-		if not "" in rec:
-			fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
-		else:
-			fm.writeCSV( csvfile, [ str(i), str( -1 ) ] )
-
-	# Create a plot of the values.
-	figurename = generatePlot( fm.readCSV( csvfile ) )
+	test( )
 
 	# Get the time when testing completes.
 	finishtime = datetime.now()
+
+	# Create a plot of the values.
+	# figurename = generatePlot( fm.readCSV( csvfile ) )
+	figurename = plotter.generatePlot( iteration, time )
 
 	# Write ending results.
 	print "\tTime to completion: " + str( finishtime - starttime )
