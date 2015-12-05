@@ -64,27 +64,27 @@ class OBD( ):
 		"""
 
 		buffer = ""
-	    repeat_count = 0
+		repeat_count = 0
 
-	    while 1:
-	        c = port.read(1)
-	        if len(c) == 0:
-	            if(repeat_count == 5):
-	                break
-	            print "Got nothing\n"
-	            repeat_count = repeat_count + 1
-	            continue
-	                    
-	        if c == '\r':
-	            continue
-	                    
-	        if c == ">":
-	            break;
-	                     
-	        if buffer != "" or c != ">": #if something is in buffer, add everything
-	            buffer = buffer + c
+		while 1:
+			c = port.read(1)
+			if len(c) == 0:
+			    if(repeat_count == 5):
+			        break
+			    print "Got nothing\n"
+			    repeat_count = repeat_count + 1
+			    continue
+			            
+			if c == '\r':
+			    continue
+			            
+			if c == ">":
+			    break;
+			             
+			if buffer != "" or c != ">": #if something is in buffer, add everything
+			    buffer = buffer + c
 
-	    return buffer
+		return buffer
 
 
 	def connect( ):
