@@ -80,6 +80,33 @@ def test(  ):
 		else:
 			fm.writeCSV( csvfile, [ str(i), str( -1 ) ] )
 
+def getColumns( rows ):
+	"""Obtains all columns within the CSV file.
+
+	Iterates over all rows within the CSV file and saves
+	the different columns into a dictionary using their
+	associated header names.
+	"""
+
+	# Dictionary of columns.
+	cols = {}
+	headers = []
+
+	for i in range( 0, len(rows) ):
+
+		# Save all column names.
+		if i == 0:
+			for j in range( 0, len(rows[i]) ):
+				headers.append( rows[i][j] )
+		else:
+			for j in range( 0, len(rows[i]) ):
+				cols[headers[j]].append( rows[i][j] )
+
+	# Return dictionary of columns
+	return cols
+
+
+
 ###
 # Main Testing Code.
 ###
@@ -119,7 +146,10 @@ if __name__ == '__main__':
 
 	# Create a plot of the values.
 	# figurename = generatePlot( fm.readCSV( csvfile ) )
-	figurename = plotter.generatePlot( iteration, time )
+	columns = getColumns( fm.readCSV( csvfile ) )
+
+	# Create plot.
+	figurename = plotter.generatePlot( columns["Iteration"], columns["RX/TX Time"], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + datetime.now().strftime( "%H_%M_%S" )), "png" )
 
 	# Write ending results.
 	print "\tTime to completion: " + str( finishtime - starttime )
