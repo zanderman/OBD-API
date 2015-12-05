@@ -13,6 +13,7 @@ from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from time import sleep
 
 
 # Baudrate
@@ -34,12 +35,12 @@ def generatePlot( rows ):
 
 	# Iterate over all rows to populate the columns.
 	for row in rows:
-		if not "Iteration" in row or not "RX/TX Time" in row and not row[0]=='0':
+		if not "Iteration" in row and not row[0]=='0':
 			iteration.append( row[0] )
 			time.append( row[1] )
 
 	# Generate plot.
-	figurename = ("RangeTest_%H:%M:%S").format(datetime.now())
+	figurename = "rangetest_" + datetime.now().strftime( "%H_%M_%S" )
 	plt.figure( figurename )
 	plt.ylabel("(RX - TX) Time [sec]")
 	plt.xlabel("Iteration")
@@ -47,7 +48,7 @@ def generatePlot( rows ):
 	plt.savefig( figurename + ".png" )
 
 	# Return the name of the plot.
-	return figurename
+	return figurename + ".png"
 
 
 
@@ -86,6 +87,13 @@ if __name__ == '__main__':
 	# Run the range test.
 	###
 	for i in range( 0, numIterations ):
+
+		if i == 5:
+			print "\tBaseline established!\n\tBegin moving..."
+		
+		if i > 5:
+			# Wait for the user to move.
+			sleep(1)
 		
 		# Write an empty line.
 		adapter.send( "" )
