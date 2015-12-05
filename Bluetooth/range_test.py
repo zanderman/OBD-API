@@ -123,7 +123,6 @@ if __name__ == '__main__':
 	finishtime = datetime.now()
 
 	# Create a plot of the values.
-	# figurename = generatePlot( fm.readCSV( csvfile ) )
 	columns = getColumns( fm.readCSV( csvfile ) )
 
 	# Create plot.
