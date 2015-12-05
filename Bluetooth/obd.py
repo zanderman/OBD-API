@@ -15,8 +15,8 @@ class OBD( ):
 	def __init__(self, addr, name, baud):
 		self.addr = addr
 		self.name = name
-		this.baud = baud
-		this.port = None
+		self.baud = baud
+		self.port = None
 
 	def setProtocol( proto ):
 		pass
@@ -32,18 +32,18 @@ class OBD( ):
 		"""
 
 		try:
-			if this.port:
+			if self.port:
 
 				# Clear all serial buffers.
-				this.port.flushOutput()
-				this.port.flushInput()
+				self.port.flushOutput()
+				self.port.flushInput()
 
 				# Send the desired command, one character at a time.
 				for c in cmd:
-					this.port.write( c )
+					self.port.write( c )
 
 				# Write ending sequence of characters.
-				this.port.write('\r\n')
+				self.port.write('\r\n')
 
 				# Success!
 				return ( True )
@@ -96,7 +96,7 @@ class OBD( ):
 		Return: Success/Failure
 		"""
 		try:
-			this.port = serial.Serial( '/dev/rfcomm0', this.baud )
+			self.port = serial.Serial( '/dev/rfcomm0', self.baud )
 			
 			# Success!
 			return ( True )
@@ -120,7 +120,7 @@ class OBD( ):
 			os.system( "sudo rfcomm release all" )
 
 			# Bind the current OBD object with rfcomm.
-			os.system( "sudo rfcomm bind 0 " + this.addr + " 1" )
+			os.system( "sudo rfcomm bind 0 " + self.addr + " 1" )
 
 			# Success!
 			return ( True )
