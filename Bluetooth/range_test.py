@@ -64,8 +64,6 @@ if __name__ == '__main__':
 	This script manages all range testing of an OBD-II adapter.
 	"""
 
-	print "[Begin]\tRange Testing"
-
 	# Scan for all adapters.
 	adapters = scanner.scan( "OBD" )
 
@@ -80,6 +78,8 @@ if __name__ == '__main__':
 	# Write header to CSV file.
 	fm.writeCSV( csvfile, [ "Iteration", "RX/TX Time" ] )
 
+	print "[Begin]\tRange Testing"
+
 	# Save the starting time.
 	starttime = datetime.now()
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
 		
 		if i > 5:
 			# Wait for the user to move.
-			sleep(1)
+			sleep(0.5)
 		
 		# Write an empty line.
 		adapter.send( "" )
@@ -104,7 +104,10 @@ if __name__ == '__main__':
 		timereceive = datetime.now()
 
 		# Save results to CSV file.
-		fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
+		if not "" in rec:
+			fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
+		else:
+			fm.writeCSV( csvfile, [ str(i), str( -1 ) ] )
 
 	# Create a plot of the values.
 	figurename = generatePlot( fm.readCSV( csvfile ) )
