@@ -126,7 +126,7 @@ if __name__ == '__main__':
 	columns = getColumns( fm.readCSV( csvfile ) )
 
 	# Create plot.
-	figurename = plotter.generatePlot( columns["Iteration"], columns["RX/TX Time"], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + datetime.now().strftime( "%H_%M_%S" )), "png" )
+	figurename = plotter.generatePlot( columns["Iteration"], columns["RX/TX Time"], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
 
 	# Write ending results.
 	print "\tTime to completion: " + str( finishtime - starttime )
