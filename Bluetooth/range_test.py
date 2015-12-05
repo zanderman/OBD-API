@@ -25,29 +25,6 @@ csvfile = "rangetest.csv"
 
 
 
-# def generatePlot( rows ):
-
-# 	# Declare column variables.
-# 	iteration = []
-# 	time = []
-
-# 	# Iterate over all rows to populate the columns.
-# 	for row in rows:
-# 		if not "Iteration" in row and not row[0]=='0':
-# 			iteration.append( row[0] )
-# 			time.append( row[1] )
-
-# 	# Generate plot.
-# 	figurename = "rangetest_" + datetime.now().strftime( "%H_%M_%S" )
-# 	plt.figure( figurename )
-# 	plt.ylabel("(RX - TX) Time [sec]")
-# 	plt.xlabel("Iteration")
-# 	plt.plot( iteration, time )
-# 	plt.savefig( figurename + ".png" )
-
-# 	# Return the name of the plot.
-# 	return figurename + ".png"
-
 def test(  ):
 	"""Perform the range test.
 
@@ -79,6 +56,7 @@ def test(  ):
 			fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
 		else:
 			fm.writeCSV( csvfile, [ str(i), str( -1 ) ] )
+
 
 def getColumns( rows ):
 	"""Obtains all columns within the CSV file.
