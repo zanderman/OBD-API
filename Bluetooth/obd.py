@@ -67,7 +67,7 @@ class OBD( ):
 		repeat_count = 0
 
 		while 1:
-			c = port.read(1)
+			c = self.port.read(1)
 			if len(c) == 0:
 			    if(repeat_count == 5):
 			        break
