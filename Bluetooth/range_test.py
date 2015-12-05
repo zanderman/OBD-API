@@ -10,6 +10,8 @@ import scanner
 # Imported Libraries.
 ###
 from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
@@ -26,21 +28,23 @@ csvfile = "rangetest.csv"
 
 def generatePlot( rows ):
 
-	# Get columns from the rows.
+	# Declare column variables.
 	iteration = []
 	time = []
+
+	# Iterate over all rows to populate the columns.
 	for row in rows:
-		if not "Iteration" in row or not "RX/TX Time" in row:
-			iteration.append( row[0]-0 )
-			time.append( row[1]-0 )
+		if not "Iteration" in row or not "RX/TX Time" in row and not row[0]=='0':
+			iteration.append( row[0] )
+			time.append( row[1] )
 
 	# Generate plot.
-	figurename = "RangeTest_" + str(datetime.now()) 
+	figurename = ("RangeTest_%H:%M:%S").format(datetime.now())
 	plt.figure( figurename )
 	plt.ylabel("(RX - TX) Time [sec]")
 	plt.xlabel("Iteration")
 	plt.plot( iteration, time )
-	plt.savefig( figurename )
+	plt.savefig( figurename + ".png" )
 
 	# Return the name of the plot.
 	return figurename
@@ -101,8 +105,8 @@ if __name__ == '__main__':
 	finishtime = datetime.now()
 
 	# Write ending results.
-	print "Time to completion: " + str( finishtime - starttime )
-	print "CSV File: " + csvfile
-	print "Plot Image: " + figurename
+	print "\tTime to completion: " + str( finishtime - starttime )
+	print "\tCSV File: " + csvfile
+	print "\tPlot Image: " + figurename
 
 	print "[End]\tRange Testing"
