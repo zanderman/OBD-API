@@ -12,6 +12,7 @@ import plotter
 ###
 from datetime import datetime
 from time import sleep
+import sys
 
 
 # Baudrate
@@ -31,13 +32,18 @@ def test(  ):
 	Sends/Receives 'N' times and saves the time delay into a CSV file.
 	"""
 
+	# Initialize variable for percentage.
+	percetage = 0
+
 	###
 	# Run through all iterations.
 	###
 	for i in range( 0, numIterations ):
 
-		if i == 5:
-			print "\tBaseline established!\n\tBegin moving..."
+		# Print out the current percentage.
+		if ( i % ( numIterations/100 ) ) == 0:
+			print "\r\t" + str(percetage) + "% complete",
+			percetage = percetage + 1
 		
 		if i > 5:
 			# Wait for the user to move.
