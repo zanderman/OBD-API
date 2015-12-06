@@ -52,7 +52,7 @@ def test(  ):
 		timereceive = datetime.now()
 
 		# Save results to CSV file.
-		if not "" in rec:
+		if not len(rec) == 0:
 			fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
 		else:
 			fm.writeCSV( csvfile, [ str(i), str( -1 ) ] )
@@ -137,7 +137,7 @@ if __name__ == '__main__':
 		columns = getColumns( fm.readCSV( csvfile ) )
 
 		# Create plot.
-		figurename = plotter.generatePlot( columns["Iteration"], columns["RX/TX Time"], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
+		figurename = plotter.generatePlot( columns["Iteration"][1:len(columns["Iteration"])], columns["RX/TX Time"][1:len(columns["RX/TX Time"])], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
 
 		# Write ending results.
 		print "\tTime to completion: " + str( finishtime - starttime )
