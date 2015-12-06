@@ -68,14 +68,19 @@ def getColumns( rows ):
 
 	# Dictionary of columns.
 	cols = {}
+
+	# Array of column header names.
 	headers = []
 
+	# Iterate over all rows within the file.
 	for i in range( 0, len(rows) ):
 
 		# Save all column names.
 		if i == 0:
 			for j in range( 0, len(rows[i]) ):
 				headers.append( rows[i][j] )
+				cols[ headers[ j ] ] = []
+		# Populate the columns.
 		else:
 			for j in range( 0, len(rows[i]) ):
 				cols[headers[j]].append( rows[i][j] )
@@ -98,39 +103,45 @@ if __name__ == '__main__':
 	# Scan for all adapters.
 	adapters = scanner.scan( "OBD" )
 
-	# Grab the first adapter returned.
-	adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
-	adapter.bind()
-	adapter.connect()
+	# No adapters were found.
+	if len( adapters ) == 0:
+		print "[!]\tNo adapters were found that have 'OBD' in their name.\nExiting..."
 
-	# Setup the file manager.
-	fm = FileManager()
+	# Adapters were found.
+	else:
+		# Grab the first adapter returned.
+		adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
+		adapter.bind()
+		adapter.connect()
 
-	# Write header to CSV file.
-	fm.writeCSV( csvfile, [ "Iteration", "RX/TX Time" ] )
+		# Setup the file manager.
+		fm = FileManager()
 
-	print "[Begin]\tRange Testing"
+		# Write header to CSV file.
+		fm.writeCSV( csvfile, [ "Iteration", "RX/TX Time" ] )
 
-	# Save the starting time.
-	starttime = datetime.now()
+		print "[Begin]\tRange Testing"
 
-	###
-	# Run the range test.
-	###
-	test( )
+		# Save the starting time.
+		starttime = datetime.now()
 
-	# Get the time when testing completes.
-	finishtime = datetime.now()
+		###
+		# Run the range test.
+		###
+		test( )
 
-	# Create a plot of the values.
-	columns = getColumns( fm.readCSV( csvfile ) )
+		# Get the time when testing completes.
+		finishtime = datetime.now()
 
-	# Create plot.
-	figurename = plotter.generatePlot( columns["Iteration"], columns["RX/TX Time"], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
+		# Create a plot of the values.
+		columns = getColumns( fm.readCSV( csvfile ) )
 
-	# Write ending results.
-	print "\tTime to completion: " + str( finishtime - starttime )
-	print "\tCSV File: " + csvfile
-	print "\tPlot Image: " + figurename
+		# Create plot.
+		figurename = plotter.generatePlot( columns["Iteration"], columns["RX/TX Time"], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
 
-	print "[End]\tRange Testing"
+		# Write ending results.
+		print "\tTime to completion: " + str( finishtime - starttime )
+		print "\tCSV File: " + csvfile
+		print "\tPlot Image: " + figurename
+
+		print "[End]\tRange Testing"
