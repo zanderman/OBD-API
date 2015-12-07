@@ -19,14 +19,14 @@ import sys
 BAUD = 115200
 
 # Total number of graph points.
-numIterations = 1000
+numIterations = 100
 
 # CSV file name.
 csvfile = "rangetest.csv"
 
 
 
-def test(  ):
+def test( adapter, fm ):
 	"""Perform the range test.
 
 	Sends/Receives 'N' times and saves the time delay into a CSV file.
@@ -100,7 +100,7 @@ def bluetooth():
 		###
 		# Run the range test.
 		###
-		test( )
+		test( adapter, fm )
 
 		# Get the time when testing completes.
 		finishtime = datetime.now()
@@ -123,7 +123,7 @@ def wifi():
 	This method manages all range testing of a wifi OBD-II adapter.
 	"""
 	pass
-	
+
 
 def getColumns( rows ):
 	"""Obtains all columns within the CSV file.
