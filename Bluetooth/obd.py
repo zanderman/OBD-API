@@ -4,6 +4,7 @@
 ###
 import serial
 import os
+import socket
 
 class OBD( ):
 	"""Representation of an OBD adapter object
@@ -21,17 +22,13 @@ class OBD( ):
 			self.name = kwargs.get("name")
 			self.ip = kwargs.get("ip")
 			self.port = kwargs.get("port")
+			self.socket = None
+
 		if "bluetooth" in self.type:
 			self.addr = kwargs.get("addr")
 			self.name = kwargs.get("name")
 			self.baud = kwargs.get("baud")
-			self.port = None
-
-	# def __init__(self, addr, name, baud):
-	# 	self.addr = addr
-	# 	self.name = name
-	# 	self.baud = baud
-	# 	self.port = None
+			self.serial = None
 
 	def setProtocol( self, proto ):
 
@@ -60,18 +57,18 @@ class OBD( ):
 			# Bluetooth device.
 			if "bluetooth" in self.type:
 
-				if self.port:
+				if self.serial:
 
 					# Clear all serial buffers.
-					self.port.flushOutput()
-					self.port.flushInput()
+					self.serial.flushOutput()
+					self.serial.flushInput()
 
 					# Send the desired command, one character at a time.
 					for c in cmd:
-						self.port.write( c )
+						self.serial.write( c )
 
 					# Write ending sequence of characters.
-					self.port.write('\r\n')
+					self.serial.write('\r\n')
 
 					# Success!
 					return ( True )
@@ -82,7 +79,8 @@ class OBD( ):
 
 			# WiFi device.
 			if "wifi" in self.type:
-				return ( False )
+				self.socket.send( cmd + "\r\n" )
+				return ( True )
 
 		except:
 			# Failure
@@ -103,7 +101,7 @@ class OBD( ):
 			# Bluetooth device.
 			if "bluetooth" in self.type:
 				while 1:
-					c = self.port.read(1)
+					c = self.serial.read(1)
 					if len(c) == 0:
 					    if(repeat_count == 5):
 					        break
@@ -123,7 +121,7 @@ class OBD( ):
 
 			# WiFi device.
 			if "wifi" in self.type:
-				return ( "" )
+				return self.socket.recv( 1024 )
 
 		# Lost connection.
 		except:
@@ -141,13 +139,14 @@ class OBD( ):
 		try:
 
 			if "bluetooth" in self.type:
-				self.port = serial.Serial( '/dev/rfcomm0', self.baud )
-			
-				# Success!
-				return ( True )
+				self.serial = serial.Serial( '/dev/rfcomm0', self.baud )
 
 			if "wifi" in self.type:
-				return ( False )
+				self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				self.socket.connect( self.ip, self.port )
+
+			# Successs!
+			return ( True )
 
 		except:
 			# Failure
