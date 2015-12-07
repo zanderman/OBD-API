@@ -17,11 +17,11 @@ class OBD( ):
 		# Save the adapter type.
 		self.type = kwargs.get("type")
 
-		if "wifi" in type:
+		if "wifi" in self.type:
 			self.name = kwargs.get("name")
 			self.ip = kwargs.get("ip")
 			self.port = kwargs.get("port")
-		if "bluetooth" in type:
+		if "bluetooth" in self.type:
 			self.addr = kwargs.get("addr")
 			self.name = kwargs.get("name")
 			self.baud = kwargs.get("baud")
