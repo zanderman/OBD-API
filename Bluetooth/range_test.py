@@ -109,7 +109,7 @@ def bluetooth():
 		columns = getColumns( fm.readCSV( csvfile ) )
 
 		# Create plot.
-		figurename = plotter.generatePlot( columns["Iteration"][1:len(columns["Iteration"])], columns["RX/TX Time"][1:len(columns["RX/TX Time"])], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
+		figurename = plotter.generate2DLinePlot( columns["Iteration"][1:len(columns["Iteration"])], columns["RX/TX Time"][1:len(columns["RX/TX Time"])], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
 
 		# Write ending results.
 		print "\tTime to completion: " + str( finishtime - starttime )
