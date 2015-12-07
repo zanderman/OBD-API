@@ -7,7 +7,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
-def generatePlot( x, y, title, xlabel, ylabel, name, ext ):
+def generate2DLinePlot( x, y, title, xlabel, ylabel, name, ext ):
 	"""Create and save an XY plot.
 
 	Generates an connected XY plot using the given data.
