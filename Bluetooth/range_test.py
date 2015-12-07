@@ -116,7 +116,8 @@ if __name__ == '__main__':
 	# Adapters were found.
 	else:
 		# Grab the first adapter returned.
-		adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
+		# adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
+		adapter = OBD( type="bluetooth", addr=adapters[0]['addr'], name=adapters[0]['name'], baud=BAUD )
 		adapter.bind()
 		adapter.connect()
 
