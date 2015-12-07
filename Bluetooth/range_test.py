@@ -19,7 +19,7 @@ import sys
 BAUD = 115200
 
 # Total number of graph points.
-numIterations = 100
+numIterations = 1000
 
 # CSV file name.
 csvfile = "rangetest.csv"
@@ -47,7 +47,7 @@ def test(  ):
 		
 		if i > 5:
 			# Wait for the user to move.
-			sleep(0.2)
+			sleep(0.1)
 		
 		# Write an empty line.
 		adapter.send( "" )
@@ -61,7 +61,7 @@ def test(  ):
 		if not len(rec) == 0:
 			fm.writeCSV( csvfile, [ str(i), str( (timereceive-timesent).total_seconds() ) ] )
 		else:
-			fm.writeCSV( csvfile, [ str(i), str( -1 ) ] )
+			fm.writeCSV( csvfile, [ str(i), str( 0 ) ] )
 
 
 def getColumns( rows ):
