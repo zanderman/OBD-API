@@ -64,46 +64,11 @@ def test(  ):
 			fm.writeCSV( csvfile, [ str(i), str( 0 ) ] )
 
 
-def getColumns( rows ):
-	"""Obtains all columns within the CSV file.
 
-	Iterates over all rows within the CSV file and saves
-	the different columns into a dictionary using their
-	associated header names.
-	"""
-
-	# Dictionary of columns.
-	cols = {}
-
-	# Array of column header names.
-	headers = []
-
-	# Iterate over all rows within the file.
-	for i in range( 0, len(rows) ):
-
-		# Save all column names.
-		if i == 0:
-			for j in range( 0, len(rows[i]) ):
-				headers.append( rows[i][j] )
-				cols[ headers[ j ] ] = []
-		# Populate the columns.
-		else:
-			for j in range( 0, len(rows[i]) ):
-				cols[headers[j]].append( rows[i][j] )
-
-	# Return dictionary of columns
-	return cols
-
-
-
-###
-# Main Testing Code.
-###
-if __name__ == '__main__':
-
+def bluetooth():
 	"""Bluetooth OBD-II Range Test
 
-	This script manages all range testing of an OBD-II adapter.
+	This method manages all range testing of a bluetooth OBD-II adapter.
 	"""
 
 	# Scan for all adapters.
@@ -151,4 +116,60 @@ if __name__ == '__main__':
 		print "\tCSV File: " + csvfile
 		print "\tPlot Image: " + figurename
 
-		print "[End]\tRange Testing"
+
+def wifi():
+	"""WiFi OBD-II Range Test
+
+	This method manages all range testing of a wifi OBD-II adapter.
+	"""
+	pass
+	
+
+def getColumns( rows ):
+	"""Obtains all columns within the CSV file.
+
+	Iterates over all rows within the CSV file and saves
+	the different columns into a dictionary using their
+	associated header names.
+	"""
+
+	# Dictionary of columns.
+	cols = {}
+
+	# Array of column header names.
+	headers = []
+
+	# Iterate over all rows within the file.
+	for i in range( 0, len(rows) ):
+
+		# Save all column names.
+		if i == 0:
+			for j in range( 0, len(rows[i]) ):
+				headers.append( rows[i][j] )
+				cols[ headers[ j ] ] = []
+		# Populate the columns.
+		else:
+			for j in range( 0, len(rows[i]) ):
+				cols[headers[j]].append( rows[i][j] )
+
+	# Return dictionary of columns
+	return cols
+
+
+
+###
+# Main Testing Code.
+###
+if __name__ == '__main__':
+
+	# Print starting message.
+	print "[Start]\tRange Testing"
+
+	# Bluetooth range test.
+	bluetooth()
+
+	# WiFi range test.
+	wifi()
+
+	# Print ending message.
+	print "[End]\tRange Testing"
