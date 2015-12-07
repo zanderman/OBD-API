@@ -12,14 +12,33 @@ class OBD( ):
 	Parameter: 	name 	Name of the adapter.
 	Parameter: 	baud 	Desired baudrate of the adapter.
 	"""
-	def __init__(self, addr, name, baud):
-		self.addr = addr
-		self.name = name
-		self.baud = baud
-		self.port = None
+	def __init__( self, *args, **kwargs ):
+
+		# Save the adapter type.
+		self.type = kwargs.get("type")
+
+		if "wifi" in type:
+			self.name = kwargs.get("name")
+			self.ip = kwargs.get("ip")
+			self.port = kwargs.get("port")
+		if "bluetooth" in type:
+			self.addr = kwargs.get("addr")
+			self.name = kwargs.get("name")
+			self.baud = kwargs.get("baud")
+			self.port = None
+
+	# def __init__(self, addr, name, baud):
+	# 	self.addr = addr
+	# 	self.name = name
+	# 	self.baud = baud
+	# 	self.port = None
 
 	def setProtocol( self, proto ):
+
+		# Send command to change protocol.
 		self.send('apsp '+str(proto))
+
+		# Get received data.
 		if "OK" in self.receive():
 			return True
 		else:
@@ -37,24 +56,32 @@ class OBD( ):
 		"""
 
 		try:
-			if self.port:
 
-				# Clear all serial buffers.
-				self.port.flushOutput()
-				self.port.flushInput()
+			# Bluetooth device.
+			if "bluetooth" in self.type:
 
-				# Send the desired command, one character at a time.
-				for c in cmd:
-					self.port.write( c )
+				if self.port:
 
-				# Write ending sequence of characters.
-				self.port.write('\r\n')
+					# Clear all serial buffers.
+					self.port.flushOutput()
+					self.port.flushInput()
 
-				# Success!
-				return ( True )
+					# Send the desired command, one character at a time.
+					for c in cmd:
+						self.port.write( c )
 
-			else:
-				# Failure
+					# Write ending sequence of characters.
+					self.port.write('\r\n')
+
+					# Success!
+					return ( True )
+
+				else:
+					# Failure
+					return ( False )
+
+			# WiFi device.
+			if "wifi" in self.type:
 				return ( False )
 
 		except:
@@ -72,24 +99,31 @@ class OBD( ):
 		repeat_count = 0
 
 		try:
-			while 1:
-				c = self.port.read(1)
-				if len(c) == 0:
-				    if(repeat_count == 5):
-				        break
-				    repeat_count = repeat_count + 1
-				    continue
-				            
-				if c == '\r':
-				    continue
-				            
-				if c == ">":
-				    break;
-				             
-				if buffer != "" or c != ">": #if something is in buffer, add everything
-				    buffer = buffer + c
 
-			return buffer
+			# Bluetooth device.
+			if "bluetooth" in self.type:
+				while 1:
+					c = self.port.read(1)
+					if len(c) == 0:
+					    if(repeat_count == 5):
+					        break
+					    repeat_count = repeat_count + 1
+					    continue
+					            
+					if c == '\r':
+					    continue
+					            
+					if c == ">":
+					    break;
+					             
+					if buffer != "" or c != ">": #if something is in buffer, add everything
+					    buffer = buffer + c
+
+				return buffer
+
+			# WiFi device.
+			if "wifi" in self.type:
+				return ( "" )
 
 		# Lost connection.
 		except:
@@ -105,10 +139,15 @@ class OBD( ):
 		Return: Success/Failure
 		"""
 		try:
-			self.port = serial.Serial( '/dev/rfcomm0', self.baud )
+
+			if "bluetooth" in self.type:
+				self.port = serial.Serial( '/dev/rfcomm0', self.baud )
 			
-			# Success!
-			return ( True )
+				# Success!
+				return ( True )
+
+			if "wifi" in self.type:
+				return ( False )
 
 		except:
 			# Failure
@@ -125,14 +164,19 @@ class OBD( ):
 		"""
 
 		try:
-			# Release all previous rfcomm bindings.
-			os.system( "sudo rfcomm release all" )
 
-			# Bind the current OBD object with rfcomm.
-			os.system( "sudo rfcomm bind 0 " + self.addr + " 1" )
+			if "bluetooth" in self.type:
+				# Release all previous rfcomm bindings.
+				os.system( "sudo rfcomm release all" )
 
-			# Success!
-			return ( True )
+				# Bind the current OBD object with rfcomm.
+				os.system( "sudo rfcomm bind 0 " + self.addr + " 1" )
+
+				# Success!
+				return ( True )
+
+			if "wifi" in self.type:
+				return ( False )
 
 		except:
 			# Failure
