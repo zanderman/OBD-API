@@ -19,7 +19,12 @@ class OBD( ):
 		self.port = None
 
 	def setProtocol( self, proto ):
-		self.send('apsp')
+		self.send('apsp '+str(proto))
+		if "OK" in self.receive():
+			return True
+		else:
+			return False
+
 
 	def send( self, cmd ):
 		"""Send a command to the OBD adapter.
