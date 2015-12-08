@@ -79,8 +79,22 @@ class OBD( ):
 
 			# WiFi device.
 			if "wifi" in self.type:
-				self.socket.send( cmd + "\r\n" )
-				return ( True )
+
+				if self.socket:
+
+					# Send the desired command, one character at a time.
+					for c in cmd:
+						self.socket.send( c )
+
+					# Write ending sequence of characters.
+					self.socket.send( '\r\n' )
+				
+					# Success!
+					return ( True )
+
+				else:
+					# Failure
+					return ( False )
 
 		except:
 			# Failure
@@ -119,9 +133,29 @@ class OBD( ):
 
 				return buffer
 
+
+
 			# WiFi device.
 			if "wifi" in self.type:
-				return self.socket.recv( 1024 )
+
+				while 1:
+					c = self.socket.recv( 1 )
+					if len(c) == 0:
+					    if(repeat_count == 5):
+					        break
+					    repeat_count = repeat_count + 1
+					    continue
+					            
+					if c == '\r':
+					    continue
+					            
+					if c == ">":
+					    break;
+					             
+					if buffer != "" or c != ">": #if something is in buffer, add everything
+					    buffer = buffer + c
+
+				return buffer
 
 		# Lost connection.
 		except:
@@ -143,7 +177,7 @@ class OBD( ):
 
 			if "wifi" in self.type:
 				self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-				self.socket.connect( self.ip, self.port )
+				self.socket.connect( (self.ip, self.port) )
 
 			# Successs!
 			return ( True )
