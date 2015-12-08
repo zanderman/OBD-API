@@ -4,7 +4,7 @@ import scanner
 
 import sys
 
-def test()
+def test():
 
         for i in range ( 1, 9):
         
