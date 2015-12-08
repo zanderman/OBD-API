@@ -1,7 +1,6 @@
 
 from obd import OBD
 import scanner
-import time
 
 import sys
 
@@ -11,16 +10,14 @@ def test()
         
                 if (adapter.setProtocol(i)) == True:
                         print "\tProtocol "+ str(i)+" supports this device.\n"
-                elif:
+                else:
                         print "\tProtocol "+ str(i)+" doesn't support this device.\n"
-                time.sleep(15)
                         
         i = "A"
         if (adapter.setProtocol(i)) == True:
-                print "\tProtocol "+ i +" supports this device.\n"
-        elif:
-                print "\tProtocol "+ i +" doesn't support this device.\n"
-
+                        print "\tProtocol "+ i +" supports this device.\n"
+                else:
+                        print "\tProtocol "+ i +" doesn't support this device.\n"
         i = "B"
         if (adapter.setProtocol(i)) == True:
                         print "\tProtocol "+ i +" supports this device.\n"

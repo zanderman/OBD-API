@@ -16,13 +16,14 @@ import sys
 
 
 # Baudrate
-BAUD = 115200
+PORT = 35000
+IP = "192.168.0.10"
 
 # Total number of graph points.
 numIterations = 100
 
 # CSV file name.
-csvfile = "rangetest.csv"
+csvfile = "wifi_rangetest.csv"
 
 
 
@@ -65,64 +66,43 @@ def test( adapter, fm ):
 
 
 
-def bluetooth():
-	"""Bluetooth OBD-II Range Test
-
-	This method manages all range testing of a bluetooth OBD-II adapter.
-	"""
-
-	# Scan for all adapters.
-	adapters = scanner.scan( "OBD" )
-
-	# No adapters were found.
-	if len( adapters ) == 0:
-		print "[!]\tNo adapters were found that have 'OBD' in their name.\nExiting..."
-
-	# Adapters were found.
-	else:
-		# Grab the first adapter returned.
-		# adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
-		adapter = OBD( type="bluetooth", addr=adapters[0]['addr'], name=adapters[0]['name'], baud=BAUD )
-		adapter.bind()
-		adapter.connect()
-
-		# Setup the file manager.
-		fm = FileManager()
-
-		# Write header to CSV file.
-		fm.writeCSV( csvfile, [ "Iteration", "RX/TX Time" ] )
-
-		print "[Begin]\tRange Testing"
-
-		# Save the starting time.
-		starttime = datetime.now()
-
-		###
-		# Run the range test.
-		###
-		test( adapter, fm )
-
-		# Get the time when testing completes.
-		finishtime = datetime.now()
-
-		# Create a plot of the values.
-		columns = getColumns( fm.readCSV( csvfile ) )
-
-		# Create plot.
-		figurename = plotter.generateLinePlot( columns["Iteration"][1:len(columns["Iteration"])], columns["RX/TX Time"][1:len(columns["RX/TX Time"])], "Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
-
-		# Write ending results.
-		print "\tTime to completion: " + str( finishtime - starttime )
-		print "\tCSV File: " + csvfile
-		print "\tPlot Image: " + figurename
-
-
 def wifi():
 	"""WiFi OBD-II Range Test
 
 	This method manages all range testing of a wifi OBD-II adapter.
 	"""
-	pass
+	global IP, PORT
+
+	adapter = OBD( type="wifi", name="OBD", ip=IP, port=PORT )
+	adapter.connect()
+
+	# Setup the file manager.
+	fm = FileManager()
+
+	# Write header to CSV file.
+	fm.writeCSV( csvfile, [ "Iteration", "RX/TX Time" ] )
+
+	# Save the starting time.
+	starttime = datetime.now()
+
+	###
+	# Run the range test.
+	###
+	test( adapter, fm )
+
+	# Get the time when testing completes.
+	finishtime = datetime.now()
+
+	# Create a plot of the values.
+	columns = getColumns( fm.readCSV( csvfile ) )
+
+	# Create plot.
+	figurename = plotter.generateLinePlot( columns["Iteration"][1:len(columns["Iteration"])], columns["RX/TX Time"][1:len(columns["RX/TX Time"])], "WiFi Range Test", "Iteration", "(RX - TX) Time [sec]", ("rangetest_" + finishtime.strftime( "%H_%M_%S" )), "png" )
+
+	# Write ending results.
+	print "\tTime to completion: " + str( finishtime - starttime )
+	print "\tCSV File: " + csvfile
+	print "\tPlot Image: " + figurename
 
 
 def getColumns( rows ):
@@ -162,11 +142,12 @@ def getColumns( rows ):
 ###
 if __name__ == '__main__':
 
+	print "\n~ WiFi Range Test ~"
+
+	# TODO: Promt user to connect to the device network FIRST!
+
 	# Print starting message.
 	print "[Start]\tRange Testing"
-
-	# Bluetooth range test.
-	bluetooth()
 
 	# WiFi range test.
 	wifi()
