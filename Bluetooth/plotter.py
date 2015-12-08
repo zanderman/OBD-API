@@ -40,7 +40,7 @@ def generateBarPlot( title, xlabel, ylabel, name, ext ):
 	"""
 
 	try:
-		return "blank" 
+		return "blank"
 
 	except:
 		# Plot failure.
