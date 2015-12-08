@@ -16,17 +16,17 @@ def test():
         i = "A"
         if (adapter.setProtocol(i)) == True:
                         print "\tProtocol "+ i +" supports this device.\n"
-                else:
+        else:
                         print "\tProtocol "+ i +" doesn't support this device.\n"
         i = "B"
         if (adapter.setProtocol(i)) == True:
                         print "\tProtocol "+ i +" supports this device.\n"
-                else:
+        else:
                         print "\tProtocol "+ i +" doesn't support this device.\n"
         i = "C"
         if (adapter.setProtocol(i)) == True:
                         print "\tProtocol "+ i +" supports this device.\n"
-                else:
+        else:
                         print "\tProtocol "+ i +" doesn't support this device.\n"
                         
                         
