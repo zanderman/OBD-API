@@ -31,8 +31,7 @@ def test():
                         
                         
                         
-                        
-def __name__ == '__main__':
+if __name__ == '__main__':
 
         adapter = scanner.scan "OBD"
         if len ( adapter ) == 0
