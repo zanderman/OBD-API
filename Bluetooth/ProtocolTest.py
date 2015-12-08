@@ -2,7 +2,7 @@
 from obd import OBD
 import scanner
 import time
-import sys
+import serial
 
 def test():
 
