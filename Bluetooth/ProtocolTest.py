@@ -1,8 +1,9 @@
 
 from obd import OBD
+
 import scanner
 import time
-import serial
+import sys
 
 def test():
 
