@@ -31,15 +31,22 @@ def test():
                         
                         
                         
-if __name__ == '__main__':
+def bluetooth():
+	
+	adapters = scanner.scan( "OBD" )
 
-        adapter = scanner.scan "OBD"
-        if len ( adapter ) == 0
-                print "[!]\tNo adapters were found that have 'OBD' in their name.\nExiting..."
-                
-        else:
-		            
-		adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
+	if len( adapters ) == 0:
+		print "[!]\tNo adapters were found that have 'OBD' in their name.\nExiting..."
+
+	# Adapters were found.
+	else:
+		# Grab the first adapter returned.
+		# adapter = OBD( adapters[0]['addr'], adapters[0]['name'], BAUD )
+		adapter = OBD( type="bluetooth", addr=adapters[0]['addr'], name=adapters[0]['name'], baud=BAUD )
 		adapter.bind()
 		adapter.connect()
-		test()
+                        
+if __name__ == '__main__':
+
+	bluetooth()
+	test()
