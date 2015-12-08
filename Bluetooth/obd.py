@@ -31,7 +31,9 @@ class OBD( ):
 			self.serial = None
 
 	def setProtocol( self, proto ):
-
+		# Send command to set protocol in standard sequence
+		self.send('atss')
+		
 		# Send command to change protocol.
 		self.send('apsp '+str(proto))
 
