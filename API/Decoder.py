@@ -1,4 +1,4 @@
-import scanner
+#import scanner
 from obd import OBD
 
 BAUD = 115200
@@ -118,8 +118,8 @@ def functEnDis(code):
 def SendOBD(code):
 	print("Sending OBDII CODE: " + str(code))
 	# send OBDII CODE
-	adapter.send(code)
-	rec = adapter.receive()
+	adapter.send_cmd(code)
+	rec = adapter.get_result()
 	return rec
 
 def MenuFxCheck():
