@@ -71,7 +71,7 @@ def getRPM():
 
 def getSpeed():
 	speed = SendOBD("010D")
-	speed = rpm.split()
+	speed = speed.split()
 	speed = speed[2]
 	return (int(speed, 16))
 
