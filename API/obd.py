@@ -7,35 +7,46 @@ from serial import SerialException
 BAUD = 115200
 
 class OBD( ):
+        
+        def __del__(self):
+            # Closes port
+            print "Closing port"
+            self.port.close()  
 
-        def __init__(self):
+
+        def connect(self):
             # Try creating serial port and receiving data, if failed,
             # connect to the device by rfcomm bind etc.
             try:
+                print "Attempting to connect"
                 self.port = serial.Serial('/dev/rfcomm0', BAUD)
-                self.send_cmd('atdp')
-                self.get_result()
+                # Warm start
+                self.send_cmd('atws')
+                s = self.get_result()
+                print "Device Connected"
+                print s
                 
             except serial.serialutil.SerialException:
-                self.connect()
+                
+                addr = self.scan()
+                self.bind(addr)
+                self.port = serial.Serial('/dev/rfcomm0', BAUD)
+                self.send_cmd('atz')            
+                self.get_result()
+                print "Device Connected"
 
-        def __del__(self):
+        def connect_specific(self,addr):
 
-            # Close the serial port
-            self.port.close()
-            
-        def connect(self):
-            
-            print "Connecting to Bluetooth Device"
-            
-            addr = self.scan()
+            print "Attempting to connect"
             self.bind(addr)
             self.port = serial.Serial('/dev/rfcomm0', BAUD)
             self.send_cmd('atz')            
-            print self.get_result()
+            self.get_result()
+            print "Device Connected"
             
         def scan(self):
             # Discover all available BT devices.
+            print "Scanning for devices"
             devices = bluetooth.discover_devices()
 
             ###
@@ -56,7 +67,6 @@ class OBD( ):
             os.system( "sudo rfcomm release all" )
 
             cmd = "sudo rfcomm bind 0 " + addr + " 1"
-            print cmd
             os.system( cmd )
 
         ###
@@ -94,8 +104,15 @@ class OBD( ):
                 if c == ">":
                     break;
                      
-                if buffer != "" or c != ">": #if something is in buffer, add everything
+                #if something is in buffer, add everything
+                if buffer != "" or c != ">": 
                     buffer = buffer + c
 
             return buffer
 
+        ## Description: Retrieves result from OBD device            
+        # @param        command to send
+        # @return       received string
+        def send_obd(self,cmd):
+            self.send_cmd(cmd)
+            return self.get_result()
