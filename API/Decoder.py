@@ -10,6 +10,9 @@ B81_A0 = 0
 BA1_C0 = 0
 BC1_E0 = 0
 
+# Set the following variable to 0 to deactivate the print statements
+PRINT_ECHO_ACTIVE = 1
+
 def setup():
 	#adapters = scanner.scan("OBD")
 	#adapter = OBD()
@@ -21,9 +24,15 @@ def setup():
 	#adapter = OBD( type="bluetooth", addr=adapters[0]['addr'], name=adapters[0]['name'], baud=BAUD )
 	#adapter.bind()
 	#onadapter.connect()
-	print(SendOBD("ate0"))
-	print(SendOBD("atl0"))
-	print(SendOBD("ath0"))
+	ans = SendOBD("ate0")
+	if (PRINT_ECHO_ACTIVE):
+		print(ans)
+	ans = SendOBD("atl0")
+	if (PRINT_ECHO_ACTIVE):
+		print(ans)
+	ans = SendOBD("ath0")
+	if (PRINT_ECHO_ACTIVE):
+		print(ans)
 
 def getTimeSinceEngineStart():
 	tses = SendOBD("011F")
@@ -116,11 +125,16 @@ def functEnDis(code):
 		return resp
 
 def SendOBD(code):
-	print("Sending OBDII CODE: " + str(code))
+	if (PRINT_ECHO_ACTIVE):
+		print("Sending OBDII CODE: " + str(code))
 	# send OBDII CODE
-	adapter.send_cmd(code)
-	rec = adapter.get_result()
-	return rec
+	if (adapter.send_cmd(code)):
+		rec = adapter.get_result()
+		return rec
+	else:
+		if (PRINT_ECHO_ACTIVE):
+			print("There was a problem with a SendOBD command")
+		return 0
 
 def MenuFxCheck():
 	# send 0100 to check 01-20
