@@ -132,6 +132,7 @@ def SendOBD(code):
 	# send OBDII CODE
 	if (adapter.send_cmd(code)):
 		rec = adapter.get_result()
+		print(rec)
 		return rec
 	else:
 		if (PRINT_ECHO_ACTIVE):
