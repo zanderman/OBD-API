@@ -12,19 +12,14 @@ BC1_E0 = 0
 
 # Set the following variable to 0 to deactivate the print statements
 PRINT_ECHO_ACTIVE = 1
+def set_echo(value):
+	PRINT_ECHO_ACTIVE = value
 
 def setup():
-	#adapters = scanner.scan("OBD")
-	#adapter = OBD()
-	#if len( adapters ) == 0:
-	#print "[!]\tNo adapters were found that have 'OBD' in their name.\nExiting..."
-	#else:
+	global PRINT_ECHO_ACTIVE
 	global adapter
 	adapter = OBD()
 	adapter.connect()
-	#adapter = OBD( type="bluetooth", addr=adapters[0]['addr'], name=adapters[0]['name'], baud=BAUD )
-	#adapter.bind()
-	#onadapter.connect()
 	ans = adapter.send_obd("ate0")
 	if (PRINT_ECHO_ACTIVE):
 		print(ans)
@@ -132,7 +127,6 @@ def SendOBD(code):
 	# send OBDII CODE
 	if (adapter.send_cmd(code)):
 		rec = adapter.get_result()
-		print(rec)
 		return rec
 	else:
 		if (PRINT_ECHO_ACTIVE):
