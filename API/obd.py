@@ -74,12 +74,16 @@ class OBD( ):
         # Return:       none
         ###
         def send_cmd(self, cmd):
-            if self.port:
-                self.port.flushOutput()
-                self.port.flushInput()
-                for c in cmd:
-                    self.port.write(c)
-                self.port.write('\r\n')
+                if self.port:
+                        self.port.flushOutput()
+                        self.port.flushInput()
+                        for c in cmd:
+                                self.port.write(c)
+                        self.port.write('\r\n')
+                        return 1
+                else:
+                        return 0
+        
 
         ###
         # Description:  Retrieves result from OBD device

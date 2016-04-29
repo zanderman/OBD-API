@@ -1,4 +1,4 @@
-#import scanner
+#!/usr/bin/env python
 from obd import OBD
 
 BAUD = 115200
@@ -128,7 +128,7 @@ def functEnDis(code):
 
 def SendOBD(code):
 	if (PRINT_ECHO_ACTIVE):
-		print("Sending OBDII CODE: " + str(code))
+		print("Sending OBDII code: " + str(code))
 	# send OBDII CODE
 	if (adapter.send_cmd(code)):
 		rec = adapter.get_result()
