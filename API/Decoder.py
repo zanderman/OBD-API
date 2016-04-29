@@ -21,6 +21,7 @@ def setup():
 	#else:
 	global adapter
 	adapter = OBD()
+	adapter.connect()
 	#adapter = OBD( type="bluetooth", addr=adapters[0]['addr'], name=adapters[0]['name'], baud=BAUD )
 	#adapter.bind()
 	#onadapter.connect()
