@@ -24,13 +24,13 @@ def setup():
 	#adapter = OBD( type="bluetooth", addr=adapters[0]['addr'], name=adapters[0]['name'], baud=BAUD )
 	#adapter.bind()
 	#onadapter.connect()
-	ans = SendOBD("ate0")
+	ans = adapter.send_obd("ate0")
 	if (PRINT_ECHO_ACTIVE):
 		print(ans)
-	ans = SendOBD("atl0")
+	ans = adapter.send_obd("atl0")
 	if (PRINT_ECHO_ACTIVE):
 		print(ans)
-	ans = SendOBD("ath0")
+	ans = adapter.send_obd("ath0")
 	if (PRINT_ECHO_ACTIVE):
 		print(ans)
 
