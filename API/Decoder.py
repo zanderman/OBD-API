@@ -12,8 +12,11 @@ BC1_E0 = 0
 
 # Set the following variable to 0 to deactivate the print statements
 PRINT_ECHO_ACTIVE = 1
+def set_echo(value):
+	PRINT_ECHO_ACTIVE = value
 
 def setup():
+	global PRINT_ECHO_ACTIVE
 	global adapter
 	adapter = OBD()
 	adapter.connect()
