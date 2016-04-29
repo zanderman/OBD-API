@@ -119,7 +119,8 @@ def functEnDis(code):
 	if (answer == "NO DATA"):
 		return "0"
 	else:
-		spl = answer.split()
+		temp = str(answer)
+		spl = temp.split()
 		resp = ""
 		for i in range(2, len(spl)):
 			resp = resp + spl[i]
