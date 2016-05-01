@@ -486,7 +486,7 @@ def Menu02():
 	return ("Same as 01, but for the specified freeze frame")	
 	
 def Menu03():
-	return ("Requeset trouble codes")
+	return ("Request trouble codes")
 	
 def Menu04():
 	return ("Clear trouble codes / Malfunction Indicator lamp (MIL) / Check engine light")
