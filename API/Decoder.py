@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+## @package Decoder API
+# This module features the OBD API implementation.
+# This module allows a user to use the OBD API 
+# and implement several basic information gathering 
+# methods. These include a menu of supported codes 
+# and demonstrates how to translate some of the recieved
+# codes.
+
 from obd import OBD
 
 BAUD = 115200
@@ -9,12 +17,19 @@ B61_80 = 0
 B81_A0 = 0
 BA1_C0 = 0
 BC1_E0 = 0
-
-# Set the following variable to 0 to deactivate the print statements
 PRINT_ECHO_ACTIVE = 1
+
+
+## Sets whether or not to print directly to the terminal
+# Set the following variable to 0 to deactivate the print statements
+# @param value a binary; 1 or 0. 1 to enable print statements, 0 to disable them.
 def set_echo(value):
+	global PRINT_ECHO_ACTIVE
 	PRINT_ECHO_ACTIVE = value
 
+## Performs the basic setup functions for simple use
+# this includes connecting to the adapter and disabling echo  
+# and headers from the responses to speed up data transmission
 def setup():
 	global PRINT_ECHO_ACTIVE
 	global adapter
@@ -30,6 +45,9 @@ def setup():
 	if (PRINT_ECHO_ACTIVE):
 		print(ans)
 
+## Sends request for the Time since engine start
+# translates the response given
+# @return int the time in seconds. Max value 65,535	
 def getTimeSinceEngineStart():
 	tses = SendOBD("011F")
 	tses = tses.split()
@@ -37,6 +55,9 @@ def getTimeSinceEngineStart():
 	b = int(tses[3], 16)
 	return ((a * 256) + b)
 	
+## Sends request for the Distance traveled with the Malfunction Indicator Lamp on
+# translates the response given
+# @return int the distance in kilometers. Max value 65,535	
 def getDistTraveledWithMIL():
 	dtwm = SendOBD("0121")
 	dtwm = dtwm.split()
@@ -44,11 +65,17 @@ def getDistTraveledWithMIL():
 	b = int(dtwm[3], 16)
 	return ((a * 256) + b)
 
+## Sends request for the Number of warmups since codes cleard
+# translates the response given
+# @return int the number of times. Max value 255
 def getNumberofWarmupsSinceCodesCleared():
 	nwscc = SendOBD("0130")
 	nwscc = nwscc.split()
 	return int(nwscc[2], 16)
 
+## Sends request for the Distance traveled Since the codes were cleared
+# translates the response given
+# @return int the distance in kilometers. Max value 65,535
 def getDistTraveledSinceCodesCleared():
 	dtscc = SendOBD("0131")
 	dtscc = dtscc.split()
@@ -56,6 +83,9 @@ def getDistTraveledSinceCodesCleared():
 	b = int(dtscc[3], 16)
 	return ((a * 256) + b)
 
+## Sends request for the Time the vehicle has run with the MIL on
+# translates the response given
+# @return int the distance in minutes. Max value 65,535
 def getTimeRunWithMIL():
 	trwm = SendOBD("014D")
 	trwm = trwm.split()
@@ -63,6 +93,9 @@ def getTimeRunWithMIL():
 	b = int(trwm[3], 16)
 	return ((a * 256) + b)
 
+## Sends request for the Time since the trouble codes were cleared
+# translates the response given
+# @return int the distance in minutes. Max value 65,535
 def getTimeSinceTroubleCodesCleared():
 	tstcc = SendOBD("014E")
 	tstcc = tstcc.split()
@@ -70,18 +103,27 @@ def getTimeSinceTroubleCodesCleared():
 	b = int(tstcc[3], 16)
 	return ((a * 256) + b)
 
+## Sends request for the engine rotations per minute
+# translates the response given
+# @return float Engine RPM. Max value 16,383.75
 def getRPM():
 	rpm = SendOBD("010C")
 	rpm = rpm.split()
 	rpm = rpm[2] + rpm[3]
 	return ((int(rpm, 16)) / 4)
 
+## Sends request for the current speed
+# translates the response given
+# @return int the speed in kilometers per hour. Max value 255
 def getSpeed():
 	speed = SendOBD("010D")
 	speed = speed.split()
 	speed = speed[2]
 	return (int(speed, 16))
 
+## Sends request for the control module voltage
+# translates the response given
+# @return float the control module voltage. Max value 65.535
 def getControlModuleVoltage():
 	cmv = SendOBD("0142")
 	cmv = cmv.split()
@@ -89,6 +131,9 @@ def getControlModuleVoltage():
 	b = int(cmv[3], 16)
 	return (((a*256)+b)/1000)
 
+## Sends request for the vehicle identification number
+# translates response given
+#@ return string with the VIN. 17 character response left padded with '0' if needed
 def getVIN():
 	vin = SendOBD("0902")
 	spl = vin.split()
@@ -108,7 +153,12 @@ def getVIN():
 	vin = vin.decode("hex")
 	return vin
 
-
+## Specific function for sending a request for the supported codes
+# and returning with a 32 bit value where each bit corresponds to a PID
+# The MSB corresponds to PID XX01 and the LSB of the response corresponds to PID XX20
+# The returned value is used heavily in the menu functions
+# @param code one of the code support request PIDs
+# @return int corresponds to 32 supported or unsupported codes
 def functEnDis(code):
 	answer = SendOBD(code)
 	if (answer == "NO DATA"):
@@ -121,6 +171,12 @@ def functEnDis(code):
 			resp = resp + spl[i]
 		return resp
 
+## General function used to send PID codes and recive the vehicle data network's response.
+# if the send failed, this function returns 0
+# vehicle responses will be in byte form, separated by spaces 
+# ie, '41 0C 05 83' is a potential returned value for the PID request '010C'
+# @param code the requested PID
+# @return string the value returned by the vehicle 
 def SendOBD(code):
 	if (PRINT_ECHO_ACTIVE):
 		print("Sending OBDII code: " + str(code))
@@ -133,6 +189,10 @@ def SendOBD(code):
 			print("There was a problem with a SendOBD command")
 		return 0
 
+## Polls the vehicle to determine what the supported codes are
+# Sets the appropriate global variable accordingly
+# this function is used once in the setup function and 
+# the global variables are used in the menu functions
 def MenuFxCheck():
 	# send 0100 to check 01-20
 	global B01_20
@@ -163,6 +223,8 @@ def MenuFxCheck():
 	global BC1_E0
 	BC1_E0 = int(functEnDis("01C0"), 16)
 	
+## Shows the descriptions for the various modes available
+# this function is meant for terminal use.
 def MainMenu():
 	print("Mode Number \tMode Description")
 	print("\t 01\tCurrent Data")
@@ -176,7 +238,9 @@ def MainMenu():
 	print("\t 09\tRequest Vehicle Information")
 	print("\t 0A\tRequest Permanent Trouble Codes\n")
 	
-
+## Shows every single supported code for mode 01
+# unsupported codes are not shown
+# @return string with descriptions to all supported mode 01 codes
 def Menu01():
 	menu = ("PID \t\t Description") + "\n"
 	menu = menu +("\t 00\tPIDs supported [01 - 20]") + "\n"
@@ -481,34 +545,60 @@ def Menu01():
 		menu = menu +("\n")
 	return menu
 	
-	
+## Returns simplified description for mode 02 codes.
+# Mode 02 is used specifically to see values at a specified freeze frame
+# the freeze frame is set by a PID code that holds all current data
+# @return string description for mode 02
 def Menu02():
 	return ("Same as 01, but for the specified freeze frame")	
 	
+## Brief description for mode 03
+# the lack of content comes from lack of available information
+# @return string brief description of mode 03
 def Menu03():
 	return ("Request trouble codes")
 	
+## Brief description for mode 04
+# the lack of content comes from lack of available information
+# @return string brief description of mode 04
 def Menu04():
 	return ("Clear trouble codes / Malfunction Indicator lamp (MIL) / Check engine light")
 
+
+## Brief description for mode 05
+# @return string description of mode 05
 def Menu05():
 	menu = ("PID \t\t Description") + ("\t 0100\tOBD Monitor IDs supported [$01-$20]") + ("\t 0101\tO2 Sensor Monitor Bank 1 Sensor 1") + ("\t 0102\tO2 Sensor Monitor Bank 1 Sensor 2") + ("\t 0103\tO2 Sensor Monitor Bank ")
 	return menu
 	
+## Brief description for mode 06
+# the lack of any content comes from lack of available information
+# @return string brief description of mode 06
 def Menu06():
 	return ("PID \t\t Description")
 	
+## Brief description for mode 07
+# the lack of any content comes from lack of available information
+# @return string brief description of mode 07
 def Menu07():
 	return ("PID \t\t Description")
 	
+## Brief description for mode 08
+# the lack of any content comes from lack of available information
+# @return string brief description of mode 08	
 def Menu08():
 	return ("PID \t\t Description")
 	
+## Brief description for mode 09
+# @return string brief description of mode 09
 def Menu09():
 	menu = ""
 	menu = "PID \t\t Description" + ("\n\t 00\tMode 9 Supported PIDs [01-20]") + ("\n\t 01\tVIN Message Count in PID 02. Only for ISO 9141-2, ISO 14230-4, and SAE J1850") + ("\n\t 02\tVehicle Identification Number (VIN)") + ("\n\t 03\tCalibration ID message count for PID 04. Only for ISO 9141-2, ISO 14230-4 and SAE J1850") + ("\n\t 04\tCalibration ID") + ("\n\t 05\tCalibration verification numbers(CVN) message count for PID 06. Only for ISO 9141-2, ISO 14230-4 and SAE J1850") + ("\n\t 06\tCalibration Verification Numbers (CVN)") + ("\n\t 07\tIn-use performance tracking message count for PID 08 and 0B. Only for ISO 9141-2, ISO 14230-4 and SAE J1850") + ("\n\t 08\tIn-use performance tracking for spark ignition vehicles") + ("\n\t 09\tECU name message count for PID 0A") + ("\n\t 0A\tECU name") + ("\n\t 0B\tIn-use performance trackig for compression ignition vehicles")
 	return menu
 	
+## Brief description for mode 0A
+# the lack of any content comes from lack of available information
+# @return string brief description of mode 0A
 def Menu0A():
 	return ("PID \t\t Description")
 	
